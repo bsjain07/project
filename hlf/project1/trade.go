@@ -15,7 +15,6 @@ type buyer_seller struct {
 }
 
 //Start point of chain code
-
 //declare product asset
 
 type Product_Asset struct {
