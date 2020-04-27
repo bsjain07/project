@@ -1,0 +1,110 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  orderer.batch3.com:
+    container_name: orderer.batch3.com
+    extends:
+      file: peer-base.yaml
+      service: orderer-base
+    volumes:
+        - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ../crypto-config/ordererOrganizations/batch3.com/orderers/orderer.batch3.com/msp:/var/hyperledger/orderer/msp
+        - ../crypto-config/ordererOrganizations/batch3.com/orderers/orderer.batch3.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.batch3.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+
+  bharat.org1.batch3.com:
+    container_name: bharat.org1.batch3.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=bharat.org1.batch3.com
+      - CORE_PEER_ADDRESS=bharat.org1.batch3.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=bharat.org1.batch3.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=afroz.org1.batch3.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=bharat.org1.batch3.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/org1.batch3.com/peers/bharat.org1.batch3.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org1.batch3.com/peers/bharat.org1.batch3.com/tls:/etc/hyperledger/fabric/tls
+        - bharat.org1.batch3.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
+
+  afroz.org1.batch3.com:
+    container_name: afroz.org1.batch3.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=afroz.org1.batch3.com
+      - CORE_PEER_ADDRESS=afroz.org1.batch3.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=afroz.org1.batch3.com:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=afroz.org1.batch3.com:8051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=bharat.org1.batch3.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/org1.batch3.com/peers/afroz.org1.batch3.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org1.batch3.com/peers/afroz.org1.batch3.com/tls:/etc/hyperledger/fabric/tls
+        - afroz.org1.batch3.com:/var/hyperledger/production
+
+    ports:
+      - 8051:8051
+
+  kumar.org2.batch3.com:
+    container_name: kumar.org2.batch3.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=kumar.org2.batch3.com
+      - CORE_PEER_ADDRESS=kumar.org2.batch3.com:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS=kumar.org2.batch3.com:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=kumar.org2.batch3.com:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=vazir.org2.batch3.com:10051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/org2.batch3.com/peers/kumar.org2.batch3.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org2.batch3.com/peers/kumar.org2.batch3.com/tls:/etc/hyperledger/fabric/tls
+        - kumar.org2.batch3.com:/var/hyperledger/production
+    ports:
+      - 9051:9051
+
+  vazir.org2.batch3.com:
+    container_name: vazir.org2.batch3.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=vazir.org2.batch3.com
+      - CORE_PEER_ADDRESS=vazir.org2.batch3.com:10051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+      - CORE_PEER_CHAINCODEADDRESS=vazir.org2.batch3.com:10052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=vazir.org2.batch3.com:10051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=kumar.org2.batch3.com:9051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/org2.batch3.com/peers/vazir.org2.batch3.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org2.batch3.com/peers/vazir.org2.batch3.com/tls:/etc/hyperledger/fabric/tls
+        - vazir.org2.batch3.com:/var/hyperledger/production
+    ports:
+      - 10051:10051

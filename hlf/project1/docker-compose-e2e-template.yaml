@@ -1,0 +1,90 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer.batch3.com:
+  bharat.org1.batch3.com:
+  afroz.org1.batch3.com:
+  kumar.org2.batch3.com:
+  vazir.org2.batch3.com:
+
+networks:
+  byfn:
+services:
+  ca0:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-org1
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.batch3.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/1b0fbf6771ae7edfc3dc01f4127a50e3c319a5906454e6011839c055749f5c9b_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org1.batch3.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/1b0fbf6771ae7edfc3dc01f4127a50e3c319a5906454e6011839c055749f5c9b_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.batch3.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerOrg1
+    networks:
+      - byfn
+
+  ca1:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-org2
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org2.batch3.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/286974714bd899f5fce758d07c5ceedb1ce3df1288ebca640bfb488a9c3d3299_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org2.batch3.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/286974714bd899f5fce758d07c5ceedb1ce3df1288ebca640bfb488a9c3d3299_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/org2.batch3.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerOrg2
+    networks:
+      - byfn
+
+  orderer.batch3.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.batch3.com
+    container_name: orderer.batch3.com
+    networks:
+      - byfn
+
+  bharat.org1.batch3.com:
+    container_name: bharat.org1.batch3.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: bharat.org1.batch3.com
+    networks:
+      - byfn
+
+  afroz.org1.batch3.com:
+    container_name: afroz.org1.batch3.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: afroz.org1.batch3.com
+    networks:
+      - byfn
+
+  kumar.org2.batch3.com:
+    container_name: kumar.org2.batch3.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: kumar.org2.batch3.com
+    networks:
+      - byfn
+
+  vazir.org2.batch3.com:
+    container_name: vazir.org2.batch3.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: vazir.org2.batch3.com
+    networks:
+      - byfn
